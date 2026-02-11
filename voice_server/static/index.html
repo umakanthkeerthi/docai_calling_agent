@@ -26,14 +26,18 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            /* Align to top for scrolling */
             justify-content: center;
-            overflow: hidden;
+            overflow-y: auto;
+            /* Enable scrolling */
             background-image:
                 radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
+            padding: 2rem 0;
+            /* Add padding for scroll space */
         }
 
         .container {
@@ -296,6 +300,55 @@
         button.loading span {
             display: none;
         }
+
+        /* --- NOTICE CARD --- */
+        .notice-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-left: 4px solid var(--secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notice-title {
+            color: var(--secondary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .notice-content {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .notice-content strong {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
     </style>
     <style>
         /* --- LOGS --- */
@@ -392,6 +445,29 @@
 
 <body>
     <div class="container">
+
+        <!-- NOTICE CARD -->
+        <div class="notice-card">
+            <div class="notice-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Important: Twilio Free Tier
+            </div>
+            <div class="notice-content">
+                <p style="margin-bottom: 0.5rem;">
+                    Calls can currently only be made to verified numbers (e.g. <strong>+919951258552</strong>).
+                </p>
+                <p style="color: #94a3b8; font-size: 0.9rem;">
+                    We will lift the call automatically. You can monitor the real-time status in the <strong>Live Call
+                        Logs</strong> section below to see exactly what is happening.
+                </p>
+            </div>
+        </div>
+
         <div class="card">
             <div class="logo">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -415,7 +491,7 @@
 
                 <div class="input-group">
                     <label>Patient Phone Number</label>
-                    <input type="tel" id="clinicalPhone" placeholder="+91 98765 43210" value="+919500049443">
+                    <input type="tel" id="clinicalPhone" placeholder="+91 98765 43210" value="+919951258552">
                 </div>
 
                 <button id="clinicalBtn" class="btn-primary" onclick="makeClinicalCall()">
