@@ -18,3 +18,4 @@ webrtcvad
 websockets
 pydantic
 jinja2
+setuptools
