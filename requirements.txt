@@ -14,7 +14,7 @@ requests
 python-multipart
 scikit-learn
 twilio
-webrtcvad
+webrtcvad-wheels
 websockets
 pydantic
 jinja2
