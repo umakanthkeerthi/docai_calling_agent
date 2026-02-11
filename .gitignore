@@ -11,3 +11,6 @@ brain/
 .vscode/
 .idea/
 
+# Allow chroma_db_new sqlite3 files
+!chroma_db_new/*.sqlite3
+
