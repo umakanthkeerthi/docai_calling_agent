@@ -10,6 +10,4 @@ ngrok.exe
 brain/
 .vscode/
 .idea/
-chroma_db/
-chroma_db_new/
-data/
+
