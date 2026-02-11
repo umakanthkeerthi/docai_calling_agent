@@ -1,0 +1,60 @@
+[
+    {
+        "category": "Immediate Resuscitation (Universal)",
+        "target_population": "All Ages",
+        "description": "Signs indicating imminent death requiring immediate stabilization.",
+        "symptoms": [
+            "Obstructed breathing",
+            "Absent breathing (Apnea)",
+            "Severe respiratory distress (Grunting, Nasal flaring, Retractions)",
+            "Central cyanosis (blue lips/tongue)",
+            "Signs of shock (cold extremities, capillary refill > 3s, weak/rapid pulse)",
+            "Coma",
+            "Convulsions (Seizures) - continuous"
+        ],
+        "action": "Immediate Resuscitation / Call Emergency Services"
+    },
+    {
+        "category": "Child-Specific Danger Signs (IMNCI)",
+        "target_population": "Child (Under 5)",
+        "description": "Critical signs defined by WHO/IMNCI for young children.",
+        "symptoms": [
+            "Unable to drink or breastfeed",
+            "Vomiting everything",
+            "Lethargy or unconsciousness",
+            "Convulsions during current illness",
+            "Stridor in a calm child",
+            "Severe malnutrition",
+            "Sunken eyes (Severe Dehydration)",
+            "Skin pinch goes back very slowly (Severe Dehydration)"
+        ],
+        "action": "Urgent Referral to Hospital / IV Fluids"
+    },
+    {
+        "category": "Cardiovascular & Stroke (Adult/General)",
+        "target_population": "Adult",
+        "description": "Time-sensitive circulatory and brain events.",
+        "symptoms": [
+            "Chest pain",
+            "Central crushing chest pain radiating to arm, jaw, or neck",
+            "Chest pain with sweating/nausea",
+            "Sudden weakness/numbness on one side (Face, Arm, Leg)",
+            "Sudden confusion or trouble speaking",
+            "Sudden severe headache (Thunderclap)",
+            "Sudden loss of vision"
+        ],
+        "action": "Immediate Transport to ER (Thrombolysis Window)"
+    },
+    {
+        "category": "Acute Systemic Emergencies",
+        "target_population": "All Ages",
+        "description": "Severe reactions affecting the whole body.",
+        "symptoms": [
+            "Anaphylaxis: Sudden breathing difficulty + Swelling + Hives",
+            "Hypothermia (Dangerously low body temp)",
+            "Hyperthermia (Dangerously high fever > 40C with confusion)",
+            "Severe Pallor (Severe Anemia)"
+        ],
+        "action": "Immediate Medical Attention"
+    }
+]

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc AI Voice Agent</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s ease-out;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            position: relative;
+        }
+
+        .logo svg {
+            width: 30px;
+            height: 30px;
+            color: white;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- TABS --- */
+        .tabs {
+            display: flex;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 0.3rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .tab:hover:not(.active) {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- FORMS --- */
+        .form-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .form-section.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .description {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Update styling for reminder inputs to look distinct */
+        #reminder-section input:focus,
+        #reminder-section textarea:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            color: white;
+            transition: transform 0.1s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: auto;
+            /* Push to bottom */
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #9333ea);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+            transform: none;
+        }
+
+        .status {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+            min-height: 20px;
+        }
+
+        .status.success {
+            color: #4ade80;
+            opacity: 1;
+        }
+
+        .status.error {
+            color: #f87171;
+            opacity: 1;
+        }
+
+        .status.loading {
+            color: #cbd5e1;
+            opacity: 1;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        button.loading .spinner {
+            display: block;
+        }
+
+        button.loading span {
+            display: none;
+        }
+    </style>
+    <style>
+        /* --- LOGS --- */
+        .logs-container {
+            margin-top: 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+        }
+
+        .logs-header {
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-indicator {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #fca5a5;
+            /* Red initially */
+        }
+
+        .status-indicator.connected::before {
+            background-color: #4ade80;
+            /* Green */
+        }
+
+        .logs-body {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            scroll-behavior: smooth;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            line-height: 1.4;
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-time {
+            color: var(--text-muted);
+            min-width: 60px;
+        }
+
+        .log-message {
+            word-break: break-all;
+        }
+
+        .log-info {
+            color: #e2e8f0;
+        }
+
+        .log-error {
+            color: #f87171;
+        }
+
+        .log-success {
+            color: #4ade80;
+        }
+
+        .log-warning {
+            color: #facc15;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                    </path>
+                </svg>
+            </div>
+
+            <h1>Doc AI Agent</h1>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('clinical')">Clinical Visit</div>
+                <div class="tab" onclick="switchTab('reminder')">Medication Reminder</div>
+            </div>
+
+            <!-- CLINICAL AGENT SECTION -->
+            <div id="clinical-section" class="form-section active">
+                <p class="description">Start a comprehensive medical triage call with our AI Doctor assistant.</p>
+
+                <div class="input-group">
+                    <label>Patient Phone Number</label>
+                    <input type="tel" id="clinicalPhone" placeholder="+91 98765 43210" value="+919500049443">
+                </div>
+
+                <button id="clinicalBtn" class="btn-primary" onclick="makeClinicalCall()">
+                    <span>Start Consultation</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+
+            <!-- MEDICATION REMINDER SECTION -->
+            <div id="reminder-section" class="form-section">
+                <p class="description">Send a one-way voice reminder to your patient.</p>
+
+                <div class="input-group">
+                    <label>Patient Phone Number</label>
+                    <input type="tel" id="reminderPhone" placeholder="+91 98765 43210" value="+919500049443">
+                </div>
+
+                <div class="input-group">
+                    <label>Reminder Message</label>
+                    <textarea id="reminderMessage"
+                        placeholder="Hello, this is Dr. Smith. Please remember to take your medication after dinner."></textarea>
+                </div>
+
+                <button id="reminderBtn" class="btn-secondary" onclick="makeReminderCall()">
+                    <span>Send Reminder</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+
+            <div id="statusMessage" class="status"></div>
+
+            <!-- LOGS SECTION -->
+            <div class="logs-container">
+                <div class="logs-header">
+                    <span>Live Call Logs</span>
+                    <span class="status-indicator" id="wsStatus">Connecting...</span>
+                </div>
+                <div class="logs-body" id="logsBody">
+                    <!-- Logs will appear here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        // Change this to your Render Backend URL if hosting Frontend separately (e.g. Vercel)
+        // Example: const API_BASE_URL = "https://my-voice-agent.onrender.com";
+        const API_BASE_URL = "";
+
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            // Update Tab styles
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            if (tabName === 'clinical') document.querySelector('.tab:nth-child(1)').classList.add('active');
+            else document.querySelector('.tab:nth-child(2)').classList.add('active');
+
+            // Toggle Sections
+            document.getElementById('clinical-section').classList.remove('active');
+            document.getElementById('reminder-section').classList.remove('active');
+
+            document.getElementById(tabName + '-section').classList.add('active');
+
+            // Clear status
+            document.getElementById('statusMessage').textContent = '';
+            document.getElementById('statusMessage').className = 'status';
+        }
+
+        // Shared Status Function
+        function showStatus(msg, type) {
+            const el = document.getElementById('statusMessage');
+            el.textContent = msg;
+            el.className = 'status ' + type;
+        }
+
+        // API Wrapper
+        async function callApi(endpoint, data, btnId) {
+            const btn = document.getElementById(btnId);
+
+            // Loading State
+            btn.classList.add('loading');
+            btn.disabled = true;
+            showStatus('Initiating...', 'loading');
+
+            try {
+                // Use API_BASE_URL
+                const url = API_BASE_URL + endpoint;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const resData = await response.json();
+
+                if (response.ok) {
+                    showStatus('Success! Call initiated.', 'success');
+                } else {
+                    showStatus('Error: ' + (resData.detail || 'Failed'), 'error');
+                }
+            } catch (error) {
+                showStatus('Network Error', 'error');
+                console.error(error);
+            } finally {
+                setTimeout(() => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }, 2000);
+            }
+        }
+
+        // Start connection
+        // connectLogs(); // Will call after defining it
+
+        // Clinical Call
+        function makeClinicalCall() {
+            const phone = document.getElementById('clinicalPhone').value.trim();
+            if (!phone) return showStatus('Enter phone number', 'error');
+
+            callApi('/api/make_call', { to_number: phone }, 'clinicalBtn');
+        }
+
+        // Reminder Call
+        function makeReminderCall() {
+            const phone = document.getElementById('reminderPhone').value.trim();
+            const message = document.getElementById('reminderMessage').value.trim();
+
+            if (!phone) return showStatus('Enter phone number', 'error');
+            if (!message) return showStatus('Enter a message', 'error');
+
+            callApi('/api/make_reminder_call', {
+                to_number: phone,
+                message: message
+            }, 'reminderBtn');
+        }
+
+        // --- LOGS WEBSOCKET ---
+        const logsBody = document.getElementById('logsBody');
+        const wsStatus = document.getElementById('wsStatus');
+        let socket;
+
+        function connectLogs() {
+            // Determine WS URL
+            let wsUrl;
+            if (API_BASE_URL) {
+                // Parse API_BASE_URL to get protocol and host
+                const apiUrl = new URL(API_BASE_URL);
+                const wsProtocol = apiUrl.protocol === "https:" ? "wss:" : "ws:";
+                wsUrl = `${wsProtocol}//${apiUrl.host}/ws/logs`;
+            } else {
+                // Local/Same-origin fallback
+                const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+                wsUrl = `${protocol}//${window.location.host}/ws/logs`;
+            }
+
+            console.log("Connecting to Logs WS:", wsUrl);
+
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = () => {
+                wsStatus.textContent = "Live";
+                wsStatus.classList.add("connected");
+                addLog("System", "Connected to log stream", "success");
+            };
+
+            socket.onmessage = (event) => {
+
+                try {
+                    const data = JSON.parse(event.data);
+                    addLog(data.timestamp, data.message, data.level);
+                } catch (e) {
+                    console.error("Log parse error", e);
+                }
+            };
+
+            socket.onclose = () => {
+                wsStatus.textContent = "Disconnected";
+                wsStatus.classList.remove("connected");
+                setTimeout(connectLogs, 3000); // Reconnect
+            };
+        }
+
+        function addLog(time, msg, level) {
+            const row = document.createElement('div');
+            row.className = `log-entry log-${level}`;
+            row.innerHTML = `<span class="log-time">${time}</span><span class="log-message">${msg}</span>`;
+            logsBody.appendChild(row);
+            logsBody.scrollTop = logsBody.scrollHeight;
+        }
+
+        // Initialize Logs
+        connectLogs();
+    </script>
+</body>
+
+</html>

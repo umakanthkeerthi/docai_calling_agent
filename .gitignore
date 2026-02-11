@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.DS_Store
+ngrok.exe
+*.log
+*.sqlite3
+brain/
+.vscode/
+.idea/
+chroma_db/
+chroma_db_new/
+data/
